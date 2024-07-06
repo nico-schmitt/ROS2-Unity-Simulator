@@ -15,26 +15,44 @@ using UnityEngine.Timeline;
 
 public class MainThreadDispatcher : MonoBehaviour
 {
-    private static readonly ConcurrentQueue<Action> _executionQueue = new ConcurrentQueue<Action>();
+    public static readonly ConcurrentQueue<Action> _executionQueueUpdate = new ConcurrentQueue<Action>();
+    public static readonly ConcurrentQueue<Action> _executionQueueFixedUpdate = new ConcurrentQueue<Action>();
 
     void Update()
     {
-        while (_executionQueue.TryDequeue(out var action))
+        while (_executionQueueUpdate.TryDequeue(out var action))
         {
             action?.Invoke();
         }
     }
 
-    public static void Enqueue(Action action)
+    void FixedUpdate()
+    {
+        while (_executionQueueFixedUpdate.TryDequeue(out var action))
+        {
+            action?.Invoke();
+        }
+    }
+
+    public static void EnqueueUpdate(Action action)
     {
         if (action == null)
             throw new ArgumentNullException(nameof(action));
 
-        _executionQueue.Enqueue(action);
+        _executionQueueUpdate.Enqueue(action);
+    }
+
+    public static void EnqueueFixedUpdate(Action action)
+    {
+        if (action == null)
+            throw new ArgumentNullException(nameof(action));
+
+        _executionQueueFixedUpdate.Enqueue(action);
     }
 
     void OnDestroy()
     {
-        _executionQueue.Clear();
+        _executionQueueUpdate.Clear();
+        _executionQueueFixedUpdate.Clear();
     }
 }

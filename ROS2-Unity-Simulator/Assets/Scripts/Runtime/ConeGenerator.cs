@@ -6,14 +6,15 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class ConeGeneratorCSV : MonoBehaviour
 {
-    public TextAsset _csvFile;
-    public GameObject _blueConePrefab;
-    public GameObject _yellowConePrefab;
-    public List<ConeInfo> _coneList {get; set;}
+    public bool enableGenerator = true;
+    public TextAsset csvFile;
+    public GameObject blueConePrefab;
+    public GameObject yellowConePrefab;
+    public List<ConeInfo> coneList {get; set;}
 
     public void GenerateTrackFromCSV(TextAsset csv)
     {
-        _coneList = CSVReader.ReadCSV(csv);
+        coneList = CSVReader.ReadCSV(csv);
         RemoveOldCones();
         InstanceNewCones();
     }
@@ -28,16 +29,21 @@ public class ConeGeneratorCSV : MonoBehaviour
 
     public void InstanceNewCones()
     {
-        foreach(ConeInfo cone in _coneList)
+        foreach(ConeInfo cone in coneList)
         {
             if(cone.color == "blue")
-                Instantiate(_blueConePrefab, new Vector3(cone.x, 0, cone.z), Quaternion.identity, this.transform);
+                Instantiate(blueConePrefab, new Vector3(cone.x, 0, cone.z), Quaternion.identity, this.transform);
             else if(cone.color == "yellow")
-                Instantiate(_yellowConePrefab, new Vector3(cone.x, 0, cone.z), Quaternion.identity, this.transform);
+                Instantiate(yellowConePrefab, new Vector3(cone.x, 0, cone.z), Quaternion.identity, this.transform);
             else
                 Debug.Log("Only blue and yellow accepted in csv");
 
         }
+    }
+
+    public void OnValidate()
+    {
+        Debug.Log("tesd");
     }
 }   
 
