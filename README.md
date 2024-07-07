@@ -10,16 +10,20 @@ docker build -t unity_ros_endpoint .
 docker run -it --rm -p 10000:10000 unity_ros_endpoint
 ```
 ## How to run simulation
-1. Start the ros-unity-endpoint:
+1. Start the unity-ros-endpoint:
 ```
 ./startDefaultEndpoint
 ```
 2. Click on play button in Unity Editor (top left connection icon should be blue if endpoint is running)
-3. Start the Autonomous System Management executable:
+3. Select the SimulationManager in the left hierarchy. Configure the topics that should be displayed and select a test track
+4. Click the "Start Simulator" button to see the magic in 4K
+5. To exit **first** click the "Stop Simulator" button and **then** quit the editor. If done in another order there might be issues and you have to manually kill the processes in the runnning docker container:
 ```
-ros2 run autonomous_system_management asm
+pkill -9 asm
+pkill -9 simulator
 ```
-and start the simulator executable as described in the [simulator repository](https://gitlab.dynamics-regensburg.de/dynamics/driverless/rpd23/simulator):
-```
-ros2 run simulator simulator
-```
+If issues still persist after this just restart everything
+
+## Additional hints
+- The unity-ros-endpoint might crash sometimes. Just run it again the container with `./startDefaultEndpoint`
+- If cones are drawn even though the simulator button has not been clicked, then the simulator exe is probably still running and you have to manually kill the process with `pkill -9 simulator`
