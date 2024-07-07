@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8174313910168838984}
   - component: {fileID: 649116504308588548}
   m_Layer: 0
-  m_Name: WhiteTestCube
+  m_Name: NoColorSpecifiedCone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

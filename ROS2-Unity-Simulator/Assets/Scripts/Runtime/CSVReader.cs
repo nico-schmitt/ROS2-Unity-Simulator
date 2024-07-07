@@ -1,28 +1,24 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Robotics.ROSTCPConnector.ROSGeometry;
 using UnityEngine;
 
 public class CSVReader : MonoBehaviour
 {
-    public static List<ConeInfo> ReadCSV(TextAsset csv)
+    public static List<ConeInfo> ReadCSV(TextAsset csv, bool skipColumnNamesRow)
         {
             string csvText = csv.text;
             List<ConeInfo> coneList = new List<ConeInfo>();
 
             string[] csvLine = csvText.Split('\n');
-            
-            for(int i = 1; i < csvLine.Length-1; i++) // Start at 1 to skip column names
+
+            ICoordinateSpace coordinateSpace = new FRD();
+
+            int startOffset = skipColumnNamesRow ? 1 : 0;
+            for(int i = startOffset; i < csvLine.Length-1; i++)
             {
                 string[] csvValues = csvLine[i].Split(',');
-
-
-                if(i == 72)
-                {
-                    Debug.Log($"x:{csvValues[0]}, z:{csvValues[1]}, color:{csvValues[2]}");
-                }
-
-
 
                 if(csvValues.Length < 3)
                 {
@@ -30,11 +26,14 @@ public class CSVReader : MonoBehaviour
                     continue;
                 }
 
+
                 if(float.TryParse(csvValues[0], out float x) && 
                     float.TryParse(csvValues[1], out float z))
                 {
                     string color = csvValues[2];
+                    Vector3 toUnitySpaceConvertedPos = coordinateSpace.ConvertToRUF(new Vector3(x,0,z));
                     ConeInfo coneInfo = new ConeInfo(x, z, color);
+                    //ConeInfo coneInfo = new ConeInfo(toUnitySpaceConvertedPos.x, toUnitySpaceConvertedPos.z, color);
                     coneList.Add(coneInfo);
                 }
                 else

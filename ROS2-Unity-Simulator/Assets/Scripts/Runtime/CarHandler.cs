@@ -33,7 +33,7 @@ public class CarHandler : MonoBehaviour
         Vector3 a = new Vector3(0,0,0);
         if(Mathf.Abs(msg.throttle) > 0.02)
             a = physicsCarGameObject.transform.forward * msg.throttle;
-        MainThreadDispatcher._executionQueueFixedUpdate.Enqueue(() => rb.AddForce(a));
+        MainThreadDispatcher.EnqueueFixedUpdate(() => rb.AddForce(a));
         //rb.velocity += a;
         float curYaw = physicsCarGameObject.transform.rotation.eulerAngles.y;
         float newYaw = curYaw + msg.steering;
@@ -47,7 +47,7 @@ public class CarHandler : MonoBehaviour
         tmp.eulerAngles = new Vector3(0, newYaw, 0);
         Quaternion tmpInUnitySpace = coordinateSpace.ConvertToRUF(tmp);
 
-        MainThreadDispatcher._executionQueueFixedUpdate.Enqueue(() => rb.AddTorque(Vector3.up * msg.steering));
+        MainThreadDispatcher.EnqueueFixedUpdate(() => rb.AddTorque(Vector3.up * msg.steering));
 
         //physicsCarGameObject.transform.rotation = tmp;
         Debug.Log($"{msg.throttle} | {msg.steering}");
@@ -56,10 +56,17 @@ public class CarHandler : MonoBehaviour
 
     public void UpdateOnlyVehiclePos(MarkerMsg msg)
     {
-        Vector3 vehiclePos= new Vector3( (float)msg.pose.position.x,
-                                                         (float)msg.pose.position.y,
-                                                         (float)msg.pose.position.z);                         
+        Vector3 vehiclePos = new Vector3( (float)msg.pose.position.x,
+                                            (float)msg.pose.position.y,
+                                            (float)msg.pose.position.z);                         
         Vector3 vehiclePosInUnitySpace = coordinateSpace.ConvertToRUF(vehiclePos);
         positionOnlyCarGameObject.transform.position = vehiclePosInUnitySpace;
+
+        // Quaternion vehicleRot = new Quaternion((float)msg.pose.orientation.x,
+        //                                        (float)msg.pose.orientation.y,
+        //                                        (float)msg.pose.orientation.z,
+        //                                        (float)msg.pose.orientation.w);
+        // Quaternion vehicleRotInUnityspace = coordinateSpace.ConvertToRUF(vehicleRot);
+        // positionOnlyCarGameObject.transform.rotation = vehicleRotInUnityspace;                                             
     }
 }

@@ -15,8 +15,8 @@ using UnityEngine.Timeline;
 
 public class MainThreadDispatcher : MonoBehaviour
 {
-    public static readonly ConcurrentQueue<Action> _executionQueueUpdate = new ConcurrentQueue<Action>();
-    public static readonly ConcurrentQueue<Action> _executionQueueFixedUpdate = new ConcurrentQueue<Action>();
+    private static readonly ConcurrentQueue<Action> _executionQueueUpdate = new ConcurrentQueue<Action>();
+    private static readonly ConcurrentQueue<Action> _executionQueueFixedUpdate = new ConcurrentQueue<Action>();
 
     void Update()
     {

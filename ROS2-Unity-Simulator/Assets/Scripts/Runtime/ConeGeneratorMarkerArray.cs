@@ -1,11 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using RosMessageTypes.Geometry;
-using RosMessageTypes.Std;
 using RosMessageTypes.Visualization;
 using Unity.Robotics.ROSTCPConnector.ROSGeometry;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class ConeGeneratorMarkerArray : MonoBehaviour
 {
@@ -16,7 +11,6 @@ public class ConeGeneratorMarkerArray : MonoBehaviour
 
     public void GenerateConesFromMarkerArray(MarkerArrayMsg arrMsg)
     {
-        Debug.Log("b");
         _markers = arrMsg.markers;
 
         foreach(MarkerMsg marker in _markers)
@@ -27,20 +21,8 @@ public class ConeGeneratorMarkerArray : MonoBehaviour
             ICoordinateSpace coordinateSpace = new FRD();
             Vector3 toUnitySpaceConvertedMarkerPos = coordinateSpace.ConvertToRUF(markerPos);
 
-            Instantiate(_blueConePrefab, toUnitySpaceConvertedMarkerPos, Quaternion.identity, this.transform);
+            //Instantiate(_blueConePrefab, toUnitySpaceConvertedMarkerPos, Quaternion.identity, this.transform);
+            Instantiate(_blueConePrefab, toUnitySpaceConvertedMarkerPos, Quaternion.identity, this.transform.GetChild(1));
         }
-    }
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

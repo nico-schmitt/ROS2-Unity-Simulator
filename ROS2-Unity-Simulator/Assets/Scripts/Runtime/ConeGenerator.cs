@@ -1,29 +1,33 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using OpenCover.Framework.Model;
+using Palmmedia.ReportGenerator.Core.Reporting.Builders;
 using UnityEngine;
 
 [ExecuteInEditMode]
 public class ConeGeneratorCSV : MonoBehaviour
 {
-    public bool enableGenerator = true;
+    public bool skipColumnNamesRow = false;
     public TextAsset csvFile;
     public GameObject blueConePrefab;
     public GameObject yellowConePrefab;
+    public GameObject noColorSpecifiedPrefab;
     public List<ConeInfo> coneList {get; set;}
 
     public void GenerateTrackFromCSV(TextAsset csv)
     {
-        coneList = CSVReader.ReadCSV(csv);
+        coneList = CSVReader.ReadCSV(csv, skipColumnNamesRow);
         RemoveOldCones();
         InstanceNewCones();
+        OffsetTrack();
     }
 
     public void RemoveOldCones()
     {
-        for(int i = transform.childCount; i > 0; i--)
+        for(int i = transform.GetChild(0).transform.childCount; i > 0; i--)
         {
-            DestroyImmediate(transform.GetChild(0).gameObject);
+            DestroyImmediate(transform.GetChild(0).transform.GetChild(0).gameObject);
         }
     }
 
@@ -32,18 +36,29 @@ public class ConeGeneratorCSV : MonoBehaviour
         foreach(ConeInfo cone in coneList)
         {
             if(cone.color == "blue")
-                Instantiate(blueConePrefab, new Vector3(cone.x, 0, cone.z), Quaternion.identity, this.transform);
+                Instantiate(blueConePrefab, new Vector3(cone.x, 0, cone.z), Quaternion.identity, this.transform.GetChild(0));
             else if(cone.color == "yellow")
-                Instantiate(yellowConePrefab, new Vector3(cone.x, 0, cone.z), Quaternion.identity, this.transform);
+                Instantiate(yellowConePrefab, new Vector3(cone.x, 0, cone.z), Quaternion.identity, this.transform.GetChild(0));
             else
-                Debug.Log("Only blue and yellow accepted in csv");
-
+                Instantiate(noColorSpecifiedPrefab, new Vector3(cone.x, 0, cone.z), Quaternion.identity, this.transform.GetChild(0));
         }
     }
 
-    public void OnValidate()
+    public void OffsetTrack()
     {
-        Debug.Log("tesd");
+        Debug.Log(csvFile.name);
+        switch(csvFile.name)
+        {
+            case "skidpad_track":
+                transform.GetChild(0).position = new Vector3(0,0,16.5f);
+                break;
+            case "accel_track":
+                transform.GetChild(0).position = new Vector3(53f,0,0);
+                break;
+            case "FSG":
+                transform.GetChild(0).position = new Vector3(0,0,0);
+                break;
+        }
     }
 }   
 
